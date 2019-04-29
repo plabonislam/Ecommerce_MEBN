@@ -7,9 +7,10 @@ var expressHbs=require('express-handlebars');
 var mongoose=require('mongoose');
 var indexRouter = require('./routes/index');
 var expressSession=require('express-session');
+
 var passport=require('passport');
  var flash=require('connect-flash');
-
+ var expressValidator=require('express-validator');
 var app = express();
 
 mongoose.connect('mongodb://localhost/shop', {useNewUrlParser: true});
@@ -21,6 +22,7 @@ app.set('view engine', '.hbs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(expressValidator());
 app.use(cookieParser());
 app.use(expressSession({ secret:'max',saveUninitialized:false,resave:false}));
 app.use(flash());

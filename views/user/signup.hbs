@@ -1,10 +1,11 @@
 <div class="row">
 <div class="col-md-4 col-md-4-offset">
 <h1>Sign Up </h1>
-{{# if haserror}}
-   {{# each message}}
-    <p>{{this.message}}</p>
-   {{/each}}
+{{#if hasErrors}}
+{{# each messages}}
+<p>{{ this }} </p>
+
+{{/each}}
 {{/if}}
 <form method="post" action="/user/signup">
     <div class="from-group">

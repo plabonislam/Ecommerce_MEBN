@@ -25,9 +25,15 @@ router.get('/', function(req, res, next) {
 
 
 router.get('/user/signup',function (req,res,next) {
-   var message=req.flash('error');
-  res.render('user/signup', { csrftoken : req.csrfToken(),message:message,haserror:message.length>0 });
+   var messages=req.flash('error');
+   var cond;
+   if(messages.length > 0)
+     cond=true;
+    else
+    cond=false;
+  res.render('user/signup', { csrftoken : req.csrfToken(),messages:messages,hasErrors: true });
 });
+
 router.post('/user/signup',passport.authenticate('local.signup',{
   successRedirect :'/user/profile',
   failureRedirect:'/user/signup',
@@ -35,9 +41,23 @@ router.post('/user/signup',passport.authenticate('local.signup',{
  }));
 
 
+ router.get('/user/signin',function (req,res,next) {
+  var messages=req.flash('error');
+  var cond;
+  if(messages.length > 0)
+    cond=true;
+   else
+   cond=false;
+ res.render('user/signin', { csrftoken : req.csrfToken(),messages:messages,hasErrors: true });
+});
 
- router.get('/user/profile',function (req,res,next) {
-  
+router.post('/user/signin',passport.authenticate('local.signin',{
+  successRedirect :'/user/profile',
+  failureRedirect:'/user/signin',
+  failureFlash:true
+ }));
+
+ router.get('/user/profile',function (req,res,next) { 
  res.render('user/profile');
 });
 
