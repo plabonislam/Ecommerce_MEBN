@@ -3,6 +3,7 @@ var router = express.Router();
 var passport=require('passport');
 var csrf = require('csurf');//import csurf in csrf variable
 var Product=require('../models/product');
+var Cart=require('../models/cart');
 
 var csrfProtection=csrf();//csurfProtection variable using csurf pacakage
 router.use(csrfProtection);//all routes uses this csurf protection
@@ -22,44 +23,21 @@ router.get('/', function(req, res, next) {
   
 });
 
+router.get('/add-cart/:id', function(req, res, next) {
+var productid=req.params.id;
+//create a cart object
+var cart=new Cart(req.session.cart ? req.session.cart :{ items:{}});
+Product.findById(productid,function(err,product)
+{
+  if(err){
+    return res.redirect('/');
+  }
+  cart.add(product,product.id);
+  req.session.cart=cart;//store cart to session
+ console.log(req.session.cart);
+  res.redirect('/');
 
-
-router.get('/user/signup',function (req,res,next) {
-   var messages=req.flash('error');
-   var cond;
-   if(messages.length > 0)
-     cond=true;
-    else
-    cond=false;
-  res.render('user/signup', { csrftoken : req.csrfToken(),messages:messages,hasErrors: true });
 });
-
-router.post('/user/signup',passport.authenticate('local.signup',{
-  successRedirect :'/user/profile',
-  failureRedirect:'/user/signup',
-  failureFlash:true
- }));
-
-
- router.get('/user/signin',function (req,res,next) {
-  var messages=req.flash('error');
-  var cond;
-  if(messages.length > 0)
-    cond=true;
-   else
-   cond=false;
- res.render('user/signin', { csrftoken : req.csrfToken(),messages:messages,hasErrors: true });
 });
-
-router.post('/user/signin',passport.authenticate('local.signin',{
-  successRedirect :'/user/profile',
-  failureRedirect:'/user/signin',
-  failureFlash:true
- }));
-
- router.get('/user/profile',function (req,res,next) { 
- res.render('user/profile');
-});
-
  module.exports = router;
 

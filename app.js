@@ -5,9 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var expressHbs=require('express-handlebars');
 var mongoose=require('mongoose');
+var userRoute=require('./routes/user');
 var indexRouter = require('./routes/index');
 var expressSession=require('express-session');
-
+var MongoStore = require('connect-mongo')(expressSession);
 var passport=require('passport');
  var flash=require('connect-flash');
  var expressValidator=require('express-validator');
@@ -24,12 +25,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(expressValidator());
 app.use(cookieParser());
-app.use(expressSession({ secret:'max',saveUninitialized:false,resave:false}));
+app.use(expressSession({ secret:'max',
+saveUninitialized:false,
+resave:false,
+store: new MongoStore({ mongooseConnection: mongoose.connection }),
+cookie:{maxAge:180*60*1000}
+}));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+  res.locals.variable=req.isAuthenticated();
+  res.locals.session=req.session;
+  next();
+});
+
+
+app.use('/user',userRoute);
 app.use('/', indexRouter);
 
 
