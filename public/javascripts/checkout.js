@@ -27,7 +27,8 @@ function stripeResponseHandler(status, response) {
 
         // Get the token ID:
         var token = response.id;
-        / Insert the token into the form so it gets submitted to the server:
+
+        // Insert the token into the form so it gets submitted to the server:
         $form.append($('<input type="hidden" name="stripeToken" />').val(token));
 
         // Submit the form:
