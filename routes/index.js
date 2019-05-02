@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var passport=require('passport');
-var csrf = require('csurf');//import csurf in csrf variable
+//var csrf = require('csurf');//import csurf in csrf variable
 var Product=require('../models/product');
 var Cart=require('../models/cart');
 
-var csrfProtection=csrf();//csurfProtection variable using csurf pacakage
-router.use(csrfProtection);//all routes uses this csurf protection
+//var csrfProtection=csrf();//csurfProtection variable using csurf pacakage
+//router.use(csrfProtection);//all routes uses this csurf protection
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //want to grab seed data from data base...as asynchronise data retriving
@@ -18,7 +18,8 @@ router.get('/', function(req, res, next) {
     {
       chunk.push(docs.slice(i,i+chunksize));
     }
-    res.render('shop/index', { title: 'Shopping Cart',products: chunk });
+    var succ=req.flash('success')[0];
+    res.render('shop/index', { title: 'Shopping Cart',products: chunk,success:succ,nosuccess:!succ });
   });
   
 });
@@ -54,10 +55,40 @@ router.get('/checkout',function(req,res,next)
   if(!req.session.cart){
     return res.render('/shoppingcart');
   }
+  
+  var cart=new Cart(req.session.cart);
+  var errmsg=req.flash('error')[0];
+// if erro is null then !errmsg return false
+  res.render('shop/checkout',{totalprice:cart.totalPrice,error: errmsg,noerror:!errmsg});
+
+});
+
+
+router.post('/checkout',function(req,res,next)
+{
+  if(!req.session.cart){
+    return res.render('/shoppingcart');
+  }
   var cart=new Cart(req.session.cart);
 
-  res.render('shop/checkout',{totalprice:cart.totalPrice});
+  const stripe = require("stripe")("sk_test_rjyjDXeaF4ZtqdpjVwrmBysT00PsodNFrW");
 
+stripe.charges.create({
+  amount: req.totalPrice,
+  currency: "usd",
+  source: req.body.stripeToken, 
+  description: "Charge for test"
+}, function(err, charge) {
+  // asynchronously called
+  if(err)
+  {
+    req.flash('error',err.message);
+   return  res.redirect('/checkout');
+  }
+  req.flash('succes','succesfully done');
+  req.session.cart=null;
+ return  res.redirect('/')
+});
 });
 
 
