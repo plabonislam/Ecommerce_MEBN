@@ -28,12 +28,25 @@ router.get('/signup',function (req,res,next) {
  });
  
  router.post('/signup',passport.authenticate('local.signup',{
-   successRedirect :'/user/profile',
+   
    failureRedirect:'/user/signup',
    failureFlash:true
-  }));
- 
- 
+  }),function(req,res,next)
+  {
+    if(req.session.oldurl)
+    {
+      
+      var old=req.session.oldurl;
+      req.session.oldurl=null;
+      console.log(old);
+      res.redirect(old);
+    }
+    else{
+      res.redirect('/user/profile');
+    }
+  });
+
+  
   router.get('/signin',function (req,res,next) {
    var messages=req.flash('error');
    var cond;
@@ -45,16 +58,26 @@ router.get('/signup',function (req,res,next) {
  });
  
  router.post('/signin',passport.authenticate('local.signin',{
-   successRedirect :'/user/profile',
+   
    failureRedirect:'/user/signin',
    failureFlash:true
-  }));
+  }),function(req,res,next)
+  {
+    if(req.session.oldurl)
+    {
+      
+      var old=req.session.oldurl;
+      req.session.oldurl=null;
+      console.log(old);
+      res.redirect(old);
+    }
+    else{
+      res.redirect('/user/profile');
+    }
+  });
  
 
- router.get('/logout', isLoggedin, function(res,req,next){
-  req.logout();
-  res.redirect('/');
- });
+ 
 
  module.exports=router;
 

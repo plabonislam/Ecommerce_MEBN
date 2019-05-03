@@ -5,13 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var expressHbs=require('express-handlebars');
 var mongoose=require('mongoose');
-var userRoute=require('./routes/user');
-var indexRouter = require('./routes/index');
+
 var expressSession=require('express-session');
 var MongoStore = require('connect-mongo')(expressSession);
 var passport=require('passport');
  var flash=require('connect-flash');
  var expressValidator=require('express-validator');
+ var userRoute=require('./routes/user');
+var indexRouter = require('./routes/index');
 var app = express();
 
 mongoose.connect('mongodb://localhost/shop', {useNewUrlParser: true});
@@ -29,7 +30,7 @@ app.use(expressSession({ secret:'max',
 saveUninitialized:false,
 resave:false,
 store: new MongoStore({ mongooseConnection: mongoose.connection }),
-cookie:{maxAge:180*60*1000}
+cookie:{maxAge:1000}
 }));
 app.use(flash());
 app.use(passport.initialize());
@@ -42,6 +43,10 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
 
 app.use('/user',userRoute);
 app.use('/', indexRouter);
