@@ -13,6 +13,12 @@ var passport=require('passport');
  var expressValidator=require('express-validator');
  var userRoute=require('./routes/user');
 var indexRouter = require('./routes/index');
+
+var nodemailer = require('nodemailer');
+var bcrypt = require('bcrypt-nodejs');
+
+var async = require('async');
+var crypto = require('crypto');
 var app = express();
 
 mongoose.connect('mongodb://localhost/shop', {useNewUrlParser: true});
