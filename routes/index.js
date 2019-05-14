@@ -188,7 +188,7 @@ router.post('/checkout', isLoggedin ,function(req,res,next)
 
 
 
-router.get('/imageup',function(req,res){
+router.get('/productup',function(req,res){
   var succ=req.flash('message')[0];
  res.render('upimage/imageview',{success:succ,nosuccess:!succ});
 
