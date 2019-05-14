@@ -22,6 +22,20 @@ module.exports= function Cart(oldCart)
         this.totalQty++;
         this.totalPrice = this.totalPrice + storeItem.item.price;
     }
+
+    this.remove=function(item,id){
+      console.log(id);
+      var storeItem=this.items[id];
+   
+       if (this.totalPrice - storeItem.item.price>= 0){
+        storeItem.qty--;
+         storeItem.price=storeItem.item.price*storeItem.qty;
+         this.totalQty--;
+         this.totalPrice = this.totalPrice - storeItem.item.price;
+         console.log('remove from model');
+
+    }
+      }
   this.generateArray=function(){
   var arr=[];
   for(var id in this.items)
