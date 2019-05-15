@@ -5,7 +5,7 @@ var passport=require('passport');
 var Product=require('../models/product');
 var Cart=require('../models/cart');
 var User = require("../models/user");
-
+var Order= require('../models/order');
 
 //for mail
 var async = require("async");
@@ -17,8 +17,6 @@ var multer=require('multer');
 const path=require('path');
 
 
-//var csrfProtection=csrf();//csurfProtection variable using csurf pacakage
-//router.use(csrfProtection);//all routes uses this csurf protection
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //want to grab seed data from data base...as asynchronise data retriving
@@ -179,14 +177,32 @@ router.post('/checkout', isLoggedin ,function(req,res,next)
           req.flash('error', err.message);
           return res.redirect('/checkout');
       }
-      req.flash('success', 'Successfully bought product!');
+      var order = new Order ( {
+
+          user:req.user,
+          cart: cart,
+          address:req.body.address,
+          name: req.body.address,
+          paymentId:charge.id
+      });
+
+      order.save(function(err,result){
+        if(err)
+        {
+           req.flash('error', err.message);
+          return res.redirect('/checkout');
+        }
+       req.flash('success', 'Successfully bought product!');
       req.session.cart = null;
       res.redirect('/');
+
+      });
+    
 });
 });
 
 
-
+//get roter to upload product
 
 router.get('/productup',function(req,res){
   var succ=req.flash('message')[0];
@@ -195,11 +211,10 @@ router.get('/productup',function(req,res){
 });
 
 
+//post router for save product and save image
 router.post('/upload',function(req,res){
 
-        
-
-
+      
   //set up storage 
   var storage = multer.diskStorage({
     destination: './public/images',
@@ -263,7 +278,7 @@ router.post('/upload',function(req,res){
   
   
   });
-  
+  //end of upload router
 
 module.exports = router;
 

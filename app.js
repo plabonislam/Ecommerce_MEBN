@@ -36,7 +36,7 @@ app.use(expressSession({ secret:'max',
 saveUninitialized:false,
 resave:false,
 store: new MongoStore({ mongooseConnection: mongoose.connection }),
-cookie:{maxAge:1000}
+cookie:{maxAge:1000*180*60}
 }));
 app.use(flash());
 app.use(passport.initialize());
@@ -50,6 +50,7 @@ app.use(function(req, res, next) {
 });
 
 app.get('/logout', function(req, res) {
+   req.session.cart = null;
   req.logout();
   res.redirect('/');
 });

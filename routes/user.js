@@ -3,10 +3,15 @@ var express = require('express');
 var router = express.Router();
 var passport=require('passport');
 
+var csrf = require('csurf');//import csurf in csrf variable
 var Order=require('../models/order');
 var User = require("../models/user");
+var Cart = require('../models/cart');
+var csrf = require('csurf');//import csurf in csrf variable
 
 
+var csrfProtection=csrf();//csurfProtection variable using csurf pacakage
+//all routes uses this csurf protection
 
 
 //for mail
@@ -15,25 +20,23 @@ var nodemailer = require("nodemailer");
 var crypto = require("crypto");
 //end for mail
 
-var csrf = require('csurf');//import csurf in csrf variable
-var csrfProtection=csrf();//csurfProtection variable using csurf pacakage
-router.use(csrfProtection);//all routes uses this csurf protection
+router.use(csrfProtection);
+//all routes uses this csurf protection
 
-router.get('/profile',isLoggedin,function (req,res,next) { 
- Order.find({user:req.user},function(err,orders)
- {
-   if(err)
-   {
-     return res.write("error");
-   }
-   var cart;
- orders.forEach(function(order)
- {
-   cart= new cart(order.cart);
-   order.items= cart.generateArray();
- });
- res.render('user/profile',{orders:orders});
- });
+router.get('/profile',isLoggedin,function (req,res,next) {
+ 
+  Order.find({ user: req.user},function(err,results){
+  if(err){
+    res.redirect('/');
+  }
+  var cart;
+  results.forEach(function(el)
+  {
+   cart = new Cart( el.cart);
+   el.items = cart.generateArray();
+  });
+  res.render('user/profile',{orders:results});
+  });
   
  });
 

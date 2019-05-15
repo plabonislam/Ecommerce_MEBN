@@ -26,13 +26,17 @@ module.exports= function Cart(oldCart)
     this.remove=function(item,id){
       console.log(id);
       var storeItem=this.items[id];
-      
-       if (storeItem.qty > 0){
         storeItem.qty--;
+       if (storeItem.qty > 0){
+      
          storeItem.price=storeItem.item.price*storeItem.qty;
          this.totalQty--;
          this.totalPrice = this.totalPrice - storeItem.item.price;
          console.log('remove from model');
+       }
+       else
+       {
+        delete this.items[id];
        }
     
       }
