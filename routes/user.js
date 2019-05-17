@@ -36,16 +36,41 @@ router.get('/profile',isLoggedin,function (req,res,next) {
    el.items = cart.generateArray();
   });
   date= Date.now();
-  console.log(date);
+  console.log(req.user.email);
   res.render('user/profile',{ orders:results , date: Date.now()}) ;
   });
   
  });
 
+
+router.get('/order-show',adminnotLoggedin,function(req,res,next){
+Order.find(function(err,results)
+{
+
+if(err)
+  res.redirect('/');
+
+var cart;
+results.forEach(function(el){
+ 
+ cart = new Cart(el.cart);
+ el.items=cart.generateArray();
+ });
+
+res.render('shop/admin-order',{orders: results});
+
+});
+
+});
+
+
 router.use('/',notLoggedin, function(res,req,next)
 {
 next();
 });
+
+
+
 
 router.get('/signup',function (req,res,next) {
     var messages=req.flash('error');
@@ -186,3 +211,14 @@ router.get('/signup',function (req,res,next) {
    }
    res.redirect('/');
  }
+function adminnotLoggedin(req,res,next){
+
+if(req.isAuthenticated())
+   {
+     if(req.user.email=== 'shahnurislamplabon@gmail.com')
+     {
+      return next();
+     }
+   }
+res.redirect('/user/signin');
+}

@@ -201,7 +201,7 @@ router.post('/checkout', isLoggedin ,function(req,res,next)
           user:req.user,
           cart: cart,
           address:req.body.address,
-          name: req.body.address,
+          name: req.body.name,
           paymentId:charge.id
       });
 
@@ -227,7 +227,7 @@ router.post('/checkout', isLoggedin ,function(req,res,next)
 
 //get roter to upload product
 
-router.get('/productup',function(req,res){
+router.get('/productup',adminnotLoggedin,function(req,res){
   var succ=req.flash('message')[0];
  res.render('upimage/imageview',{success:succ,nosuccess:!succ});
 
@@ -307,7 +307,7 @@ router.post('/upload',function(req,res){
 
 //show all product for  admin router
 
-router.get('/show/admin',function(req,res,next){
+router.get('/show/admin',adminnotLoggedin, function(req,res,next){
 
 Product.find(function(err,result)
 {
@@ -328,7 +328,7 @@ res.render('shop/show',{ products:arr});
 });
 
 
-router.get('/remove-admin/:id',function(req,res,next){
+router.get('/remove-admin/:id',adminnotLoggedin,function(req,res,next){
  var productid = req.params.id;
 
   Product.findByIdAndRemove(productid).exec();
@@ -349,3 +349,16 @@ function isLoggedin(req,res,next)
    console.log(req.session.oldurl);
    res.redirect('/user/signin');
  }
+
+
+function adminnotLoggedin(req,res,next){
+
+if(req.isAuthenticated())
+   {
+     if(req.user.email=== 'shahnurislamplabon@gmail.com')
+     {
+      return next();
+     }
+   }
+res.redirect('/user/signin');
+}
