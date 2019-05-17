@@ -27,6 +27,7 @@ module.exports= function Cart(oldCart)
       console.log(id);
       var storeItem=this.items[id];
         storeItem.qty--;
+        this.items[id].qty--;
        if (storeItem.qty > 0){
       
          storeItem.price=storeItem.item.price*storeItem.qty;

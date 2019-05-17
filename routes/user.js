@@ -35,7 +35,9 @@ router.get('/profile',isLoggedin,function (req,res,next) {
    cart = new Cart( el.cart);
    el.items = cart.generateArray();
   });
-  res.render('user/profile',{orders:results});
+  date= Date.now();
+  console.log(date);
+  res.render('user/profile',{ orders:results , date: Date.now()}) ;
   });
   
  });

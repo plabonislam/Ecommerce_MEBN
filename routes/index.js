@@ -17,7 +17,8 @@ var multer=require('multer');
 const path=require('path');
 
 
-/* GET home page. */
+
+
 router.get('/', function(req, res, next) {
   //want to grab seed data from data base...as asynchronise data retriving
   Product.find(function(err,docs)
@@ -46,6 +47,7 @@ router.get('/reset/:token', function(req, res) {
     res.render('user/reset', {token: req.params.token});
   });
 });
+
 
 
 
@@ -99,6 +101,8 @@ router.post('/reset/:token', function(req, res) {
   });
 });
 
+
+
 router.get('/add-cart/:id', function(req, res, next) {
   var productId = req.params.id;
   //create an object
@@ -115,6 +119,9 @@ router.get('/add-cart/:id', function(req, res, next) {
 
 });
 });
+
+
+
 
 router.get('/remove-cart/:id',function(req,res,next){
 var productid=req.params.id;
@@ -134,6 +141,8 @@ var cart = new Cart(req.session.cart ? req.session.cart : {});
 });
 
 
+
+
 router.get('/shoppingcart', function(req, res, next) {
   if (!req.session.cart) {
       return res.render('shop/shoppingcart', {products: null});
@@ -141,6 +150,10 @@ router.get('/shoppingcart', function(req, res, next) {
    var cart = new Cart(req.session.cart);
    res.render('shop/shoppingcart', {products: cart.generateArray(), totalprice: cart.totalPrice});
 });
+
+
+
+
 
 router.get('/checkout', isLoggedin ,function(req,res,next)
 {
@@ -155,6 +168,12 @@ router.get('/checkout', isLoggedin ,function(req,res,next)
 
 });
 
+
+
+
+
+
+//saving order and saving data for visa card and check
 
 router.post('/checkout', isLoggedin ,function(req,res,next)
 {
@@ -202,6 +221,10 @@ router.post('/checkout', isLoggedin ,function(req,res,next)
 });
 
 
+
+
+
+
 //get roter to upload product
 
 router.get('/productup',function(req,res){
@@ -209,6 +232,8 @@ router.get('/productup',function(req,res){
  res.render('upimage/imageview',{success:succ,nosuccess:!succ});
 
 });
+
+
 
 
 //post router for save product and save image
@@ -279,6 +304,38 @@ router.post('/upload',function(req,res){
   
   });
   //end of upload router
+
+//show all product for  admin router
+
+router.get('/show/admin',function(req,res,next){
+
+Product.find(function(err,result)
+{
+  if(err){
+    res.redirect('/');
+  }
+  
+  var arr=[];
+  var arrsize=3;
+  for(var i=0;i<result.length;i+=arrsize){
+    arr.push(result.slice(i,i+arrsize));
+
+  }
+res.render('shop/show',{ products:arr});
+
+});
+
+});
+
+
+router.get('/remove-admin/:id',function(req,res,next){
+ var productid = req.params.id;
+
+  Product.findByIdAndRemove(productid).exec();
+  console.log('doneeeeeee findByIdAndRemove');
+  res.redirect('/');
+
+});
 
 module.exports = router;
 
