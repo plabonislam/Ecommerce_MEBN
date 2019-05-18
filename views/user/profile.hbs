@@ -3,10 +3,22 @@
         <h1>User Profile</h1>
         <hr>
         <h2>My Orders</h2>
-           {{  date }}
+      
         {{# each orders }}
             <div class="panel panel-default">
                 <div class="panel-body">
+
+
+
+
+                    <ul class="list-group">
+
+                            <li class="list-group-item">
+
+                   user name for order:  {{ this.name}} || location {{  this.address}} || contact        {{this.contact}}
+                            </li>
+                       
+                    </ul>
 
                     <ul class="list-group">
 

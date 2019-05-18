@@ -23,24 +23,28 @@ module.exports= function Cart(oldCart)
         this.totalPrice = this.totalPrice + storeItem.item.price;
     }
 
-    this.remove=function(item,id){
-      console.log(id);
-      var storeItem=this.items[id];
-        storeItem.qty--;
-        this.items[id].qty--;
-       if (storeItem.qty > 0){
-      
-         storeItem.price=storeItem.item.price*storeItem.qty;
-         this.totalQty--;
-         this.totalPrice = this.totalPrice - storeItem.item.price;
-         console.log('remove from model');
-       }
-       else
+    this.reduceByOne=function(id){
+    
+    this.items[id].qty--;
+    this.items[id].price -=this.items[id].item.price
+       this.totalQty--;
+       this.totalPrice -= this.items[id].item.price;
+
+       if(this.items[id].qty <= 0)
        {
         delete this.items[id];
        }
     
       }
+
+
+      this.reduceByAll=function(id){
+        this.totalQty -= this.items[id].qty;
+        this.totalPrice -= this.items[id].price;
+        delete this.items[id];
+
+      }
+
   this.generateArray=function(){
   var arr=[];
   for(var id in this.items)
