@@ -9,7 +9,7 @@
 
 #Rest of the routes available for all
 
-#gmail password is encoded using export GMAILPW= "your password" for sendig mail so add your email in restet router and export
-your password
+#gmail password is encoded using export GMAILPW= "your password" for sendig mail so add your email in reset router and export
+your password with proper gmail
 
 #still working on live chat
