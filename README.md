@@ -1,4 +1,4 @@
-# GameZone_Mongodb_EXpress_handlebar_node.js
+# GameZone_Mongodb_EXpress_Bootstrap_handlebar
 
 
 #cart functionality
